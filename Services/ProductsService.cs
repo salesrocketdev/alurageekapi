@@ -21,8 +21,22 @@ public class ProductsService
             productStoreDatabaseSettings.Value.ProductCollectionName);
     }
 
-    public async Task<List<Product>> GetAsync() =>
-        await _productsCollection.Find(_ => true).ToListAsync();
+    public async Task<CommandResult> GetAsync() 
+    {
+        CommandResult commandResult = new CommandResult();
+
+        try
+        {
+            var data = await _productsCollection.Find(_ => true).ToListAsync();
+            commandResult.Data = data;
+            return commandResult;
+        }
+        catch (System.Exception e)
+        {         
+            commandResult.Message = e.ToString();      
+            return commandResult;
+        }
+    }
 
     public async Task<Product?> GetAsync(string id) =>
         await _productsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();

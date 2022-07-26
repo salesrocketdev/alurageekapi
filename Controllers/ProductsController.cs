@@ -15,7 +15,7 @@ public class ProductsController : ControllerBase
         _productsService = productsService;    
 
     [HttpGet]
-    public async Task<List<Product>> Get() =>
+    public async Task<CommandResult> Get() =>
         await _productsService.GetAsync();
 
     [HttpGet("{id:length(24)}")]
