@@ -21,8 +21,32 @@ public class UserService
             usersStoreDatabaseSettings.Value.UserCollectionName);
     }
 
-    public async Task<List<User>> GetAsync() =>
-        await _usersCollection.Find(_ => true).ToListAsync();
+    public async Task<CommandResult> GetAsync()
+    {        
+        CommandResult commandResult = new CommandResult();
+
+        try
+        {
+            var data = await _usersCollection.Find(_ => true).ToListAsync();
+
+            if (data.Count() <= 0) {
+                commandResult.Message = "Nenhum Usuário encontrado.";
+            } 
+            else 
+            {
+                commandResult.Message = data.Count().ToString();
+            }
+
+            commandResult.Data = data;
+
+            return commandResult;
+        }
+        catch (System.Exception e)
+        {         
+            commandResult.Message = e.ToString();
+            return commandResult;
+        }
+    }
     
     public async Task<User?> Get(string email, string password) =>
         await _usersCollection.Find(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();

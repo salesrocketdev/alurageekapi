@@ -28,7 +28,47 @@ public class ProductsService
         try
         {
             var data = await _productsCollection.Find(_ => true).ToListAsync();
+
+            if (data.Count() <= 0) {
+                commandResult.Message = "Nenhum produto encontrado.";
+            } 
+            else 
+            {
+                commandResult.Message = data.Count().ToString();
+            }
+
             commandResult.Data = data;
+
+            return commandResult;
+        }
+        catch (System.Exception e)
+        {         
+            commandResult.Message = e.ToString();
+            return commandResult;
+        }
+    }
+
+    public async Task<Product?> GetAsync(string id) =>
+        await _productsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+
+    public async Task<CommandResult> GetByTitleAsync(string title) 
+    {
+        CommandResult commandResult = new CommandResult();
+
+        try
+        {
+            var data = await _productsCollection.Find(x => x.Title.ToLower().Contains(title.ToLower())).ToListAsync();
+
+            if (data.Count() <= 0) {
+                commandResult.Message = "Nenhum produto encontrado.";
+            } 
+            else 
+            {
+                commandResult.Message = data.Count().ToString();
+            }
+            
+            commandResult.Data = data;
+            
             return commandResult;
         }
         catch (System.Exception e)
@@ -38,14 +78,34 @@ public class ProductsService
         }
     }
 
-    public async Task<Product?> GetAsync(string id) =>
-        await _productsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    public async Task<CommandResult> GetCategoryAsync(string category) 
+    {
+        CommandResult commandResult = new CommandResult();
 
-    public async Task<List<Product>> GetByTitleAsync(string title) =>
-        await _productsCollection.Find(x => x.Title.ToLower().Contains(title.ToLower())).ToListAsync();
+        try
+        {
+            var data = await _productsCollection.Find(x => x.Category.ToLower().Contains(category.ToLower())).ToListAsync();
 
-    public async Task<List<Product>> GetCategoryAsync(string category) =>
-        await _productsCollection.Find(x => x.Category.ToLower().Contains(category.ToLower())).ToListAsync();
+            commandResult.Message = data.Count().ToString();
+
+            if (data.Count() <= 0) {
+                commandResult.Message = "Nenhum produto encontrado.";
+            } 
+            else 
+            {
+                commandResult.Message = data.Count().ToString();
+            }
+
+            commandResult.Data = data;
+            
+            return commandResult;
+        }
+        catch (System.Exception e)
+        {         
+            commandResult.Message = e.ToString();      
+            return commandResult;
+        }        
+    }
     
     public async Task CreateAsync(Product newProduct) =>
         await _productsCollection.InsertOneAsync(newProduct);

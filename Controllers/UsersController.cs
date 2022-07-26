@@ -16,7 +16,7 @@ public class UsersController : ControllerBase
 
     [Authorize(Roles = "admin")]
     [HttpGet]
-    public async Task<List<User>> Get() =>
+    public async Task<CommandResult> Get() =>
         await _usersService.GetAsync();
 
     [AllowAnonymous]

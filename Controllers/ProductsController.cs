@@ -32,11 +32,11 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("Filter/Title/{title}")]
-    public async Task<List<Product>> GetByTitle(string title) =>
+    public async Task<CommandResult> GetByTitle(string title) =>
         await _productsService.GetByTitleAsync(title);
 
     [HttpGet("Filter/Category/{category}")]
-    public async Task<List<Product>> GetByCategory(string category) =>
+    public async Task<CommandResult> GetByCategory(string category) =>
         await _productsService.GetCategoryAsync(category);    
 
     [Authorize(Roles = "admin")]
