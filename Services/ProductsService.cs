@@ -48,8 +48,24 @@ public class ProductsService
         }
     }
 
-    public async Task<Product?> GetAsync(string id) =>
-        await _productsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    public async Task<CommandResult?> GetAsync(string id)
+    {
+    CommandResult commandResult = new CommandResult();
+
+        try
+        {
+            var data = await _productsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();            
+
+            commandResult.Data = data;
+
+            return commandResult;
+        }
+        catch (System.Exception e)
+        {         
+            commandResult.Message = e.ToString();
+            return commandResult;
+        }
+    }
 
     public async Task<CommandResult> GetByTitleAsync(string title) 
     {

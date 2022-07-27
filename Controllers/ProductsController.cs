@@ -19,7 +19,7 @@ public class ProductsController : ControllerBase
         await _productsService.GetAsync();
 
     [HttpGet("{id:length(24)}")]
-    public async Task<ActionResult<Product>> Get(string id)
+    public async Task<ActionResult<CommandResult>> GetById(string id)
     {   
         var product = await _productsService.GetAsync(id);
 
@@ -52,14 +52,10 @@ public class ProductsController : ControllerBase
     [HttpPut("{id:length(24)}")]
     public async Task<IActionResult> Update(string id, Product updatedProduct)
     {
-        var product = await _productsService.GetAsync(id);
-
-        if (product is null)
+        if (id != updatedProduct.Id)
         {
             return NotFound("Produto não encontrado.");
         }
-
-        updatedProduct.Id = product.Id;
 
         await _productsService.UpdateAsync(id, updatedProduct);
 
